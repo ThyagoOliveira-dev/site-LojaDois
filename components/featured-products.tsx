@@ -1,17 +1,34 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { getFeaturedProducts } from "@/lib/products"
+import { getProdutos } from "@/lib/products"
 import { ProductCard } from "./product-card"
 
 export function FeaturedProducts() {
-  const featuredProducts = getFeaturedProducts()
+  const [products, setProducts] = useState([])
+
+useEffect(() => {
+  getProdutos().then((data) => {
+    const formatted = data.map((p: any) => ({
+      id: p.id,
+      name: p.nome,
+      price: p.preco,
+      originalPrice: null, // ou p.precoOriginal se tiver
+      image: p.imagem || "/placeholder.jpg",
+      category: p.categoria,
+      inStock: p.estoque > 0
+    }))
+
+    setProducts(formatted)
+  })
+}, [])
 
   return (
     <section id="produtos" className="py-20 lg:py-32">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="text-center mb-16">
           <p className="text-sm tracking-[0.3em] uppercase text-muted-foreground mb-4">
             Destaques
           </p>
@@ -21,7 +38,7 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
-          {featuredProducts.map((product, index) => (
+          {products.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>

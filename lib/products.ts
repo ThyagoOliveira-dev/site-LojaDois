@@ -1,5 +1,9 @@
 import { Product } from "./types"
-
+// services/api.ts
+export async function getProdutos() {
+  const response = await fetch("http://localhost:8080/produtos")
+  return response.json()
+}
 export const products: Product[] = [
   {
     id: "1",
@@ -98,8 +102,9 @@ export const products: Product[] = [
     inStock: true,
   },
 ]
-
 export const categories = ["Todos", "Vestidos", "Conjuntos", "Blusas", "Calças", "Saias", "Blazers"]
+
+
 
 export function getProductById(id: string): Product | undefined {
   return products.find(p => p.id === id)
