@@ -10,7 +10,7 @@ export default function Dashboard() {
     const isAuth = localStorage.getItem("auth")
 
     if (!isAuth) {
-      router.push("/admin/login") // 🔥 bloqueia acesso
+      router.push("/admin/login")
     }
   }, [])
 

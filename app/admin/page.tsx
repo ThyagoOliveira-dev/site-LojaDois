@@ -6,6 +6,7 @@ export default function AdminPage() {
   const [nome, setNome] = useState("")
   const [preco, setPreco] = useState("")
   const [products, setProducts] = useState([])
+  const [editingId, setEditingId] = useState<number | null>(null)
 
   async function fetchProducts() {
     const response = await fetch("http://localhost:8080/produtos")
@@ -36,21 +37,39 @@ export default function AdminPage() {
       estoque: 1
     }
 
-    await fetch("http://localhost:8080/produtos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(produto)
-    })
+    // UPDATE
+    if (editingId) {
 
-    alert("Produto criado!")
+      await fetch(`http://localhost:8080/produtos/${editingId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(produto)
+      })
+
+      alert("Produto atualizado!")
+
+    } else {
+
+      // CREATE
+      await fetch("http://localhost:8080/produtos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(produto)
+      })
+
+      alert("Produto criado!")
+    }
 
     fetchProducts()
 
-    // opcional: limpar formulário
     setNome("")
     setPreco("")
+
+    setEditingId(null)
   }
 
 async function handleDelete(id: number) {
@@ -69,13 +88,20 @@ async function handleDelete(id: number) {
   }
 }
 
+function handleEdit(produto: any) {
+  setNome(produto.nome)
+  setPreco(produto.preco.toString())
+
+  setEditingId(produto.id)
+}
+
   return (
     <div style={{ padding: 20 }}>
       <h1>Admin - Criar Produto</h1>
 
       <form onSubmit={handleSubmit}>
         <input
-          placeholder="Nome"
+          placeholder="Nome do produto"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
         />
@@ -86,19 +112,12 @@ async function handleDelete(id: number) {
           onChange={(e) => setPreco(e.target.value)}
         />
 
-        <button type="submit">Criar Produto</button>
+        <button type="submit">
+          {editingId ? "Atualizar Produto" : "Criar Produto"}
+        </button>
       </form>
 
       <h2>Produtos cadastrados</h2>
-
-      <ul>
-        {products.map((p: any) => (
-          <li key={p.id}>
-            {p.nome} - R$ {p.preco}
-          </li>
-        ))}
-      </ul>
-
       <ul>
         {products.map((p: any) => (
           <li key={p.id}>
@@ -106,6 +125,9 @@ async function handleDelete(id: number) {
 
             <button onClick={() => handleDelete(p.id)}>
               ❌ Deletar
+            </button>
+            <button onClick={() => handleEdit(p)}>
+              🔄 Atualizar
             </button>
           </li>
         ))}
