@@ -34,13 +34,6 @@ Este projeto foi desenvolvido com foco em aprendizado prático de backend utiliz
 # 🧪 Testes
 Em desenvolvimento
 
-# 📌 Próximos passos:
-- Criar interface gráfica para a tela admin
- - Melhorar validações
-- Implementar controle de permissões (roles)
- - Deploy da aplicação
-- Finalização da integração com frontend
-
 # 💡 Melhorias futuras:
 - Cache de dados
 - Paginação de produtos
